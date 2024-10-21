@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-evaluate-action"
+version = "0.1.0"
+authors = []
+readme = "README.md"
+description = ""
+requires-python = ">=3.12"
+dependencies = ["azure-ai-evaluation", "pydantic~=2.0", "Jinja2~=3.0"]
+
+[project.optional-dependencies]
+dev = ["pre-commit", "mypy~=1.0", "tox~=4.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+ai_evaluate_action = ["*.jinja"]
+
+[tool.isort]
+profile = "black"
+line_length = 120
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.lint.ruff]
+extend-select = [
+  "B",
+  "C4",
+  "T20",
+  "T100",
+  "ISC",
+  "PT",
+  "RET",
+  "SIM",
+  "ARG",
+  "PTH",
+  "RUF",
+  "PLE",
+  "ANN",
+  "RUF",
+  "D",
+  "FBT",
+  "A",
+  "G",
+]
+ignore = [
+  "ANN101", # missing-type-self
+  "ANN102", # missing-type-cls
+  "D1",     # missing docstring in ...
+  "D203",   # one-blank-line-before-class
+  "D213",   # multi-line-summary-second-line
+]
+
+line-length = 120
+
+[tool.mypy]
+disallow_untyped_calls = true
+strict = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+disallow_untyped_defs = true
+check_untyped_defs = true

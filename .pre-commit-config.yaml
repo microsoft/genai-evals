@@ -1,0 +1,32 @@
+repos:
+-   repo: local
+    hooks:
+    - id: ruff
+      name: ruff
+      description: "Run 'ruff' for extremely fast Python linting"
+      entry: tox -qqq run -e ruff -- check --force-exclude
+      language: python
+      types_or: [python, pyi, jupyter]
+      args: ["--fix", "--exit-non-zero-on-fix"]
+      require_serial: true
+      additional_dependencies: []
+      minimum_pre_commit_version: "2.9.2"
+    - id: isort
+      name: isort
+      entry: tox -qqq run -e isort --
+      stages: [pre-commit, pre-merge-commit, pre-push, manual]
+      require_serial: true
+      language: python
+      types_or: [cython, pyi, python]
+      args: ['--filter-files']
+      minimum_pre_commit_version: '2.9.2'
+    - id: ruff-format
+      name: ruff-format
+      description: "Run 'ruff format' for extremely fast Python formatting"
+      entry: tox -qqq run -e ruff -- format --force-exclude
+      language: python
+      types_or: [python, pyi, jupyter]
+      args: []
+      require_serial: true
+      additional_dependencies: []
+      minimum_pre_commit_version: "2.9.2"

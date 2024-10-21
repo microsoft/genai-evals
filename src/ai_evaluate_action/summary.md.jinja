@@ -1,0 +1,51 @@
+# Test Variants
+
+
+| Name | system-prompt |
+| :--  | :------------ |
+{% for name, value in system_prompts -%}
+| {{ name }} | {{ value }}
+{% endfor %}
+
+# Average scores
+
+> [!NOTE]
+> The evaluation results for each test variant are displayed below, averaged over the {{ tests|length }} test cases.
+
+| Evaluator | {% for system_prompt in average_eval_scores -%} {{ system_prompt }} |{% endfor %}
+| :-------- | {{ " ---: |" * (average_eval_scores|length) }}
+{% for evaluator_name in evaluator_names -%}
+| {{ evaluator_name }} | {% for system_prompt in average_eval_scores -%} {{ average_eval_scores[system_prompt][evaluator_name] }} |{% endfor %}
+{% endfor %}
+
+# Individual test scores
+
+{% for (query, ground_truth), rows in tests.items() %}
+
+## Test {{ loop.index }}
+
+### Inputs
+
+* **Query:** {{ query }}
+* **Ground truth:** {{ ground_truth }}
+
+### Eval Scores
+
+| Evaluator | {% for row in rows -%} {{ row['system_prompt'].name }} |{% endfor %}
+| :-------- | {{ " ---: |" * (rows|length) }}
+{% for evaluator_name in evaluator_names -%}
+| {{ evaluator_name }} | {% for row in rows -%} {{ row.eval_scores[evaluator_name] }} |{% endfor %}
+{% endfor %}
+
+### Raw Outputs
+
+{% for row in rows -%}
+<details>
+<summary><strong>{{ row['system_prompt'].name }}</strong></summary>
+
+{{ row['inputs']['response'] }}
+
+</details>
+
+{% endfor %}
+{% endfor %}
