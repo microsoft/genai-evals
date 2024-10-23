@@ -19,7 +19,10 @@ inputs:
       default: null
     show_summary:
       required: false
-      default: true
+      default: 'true'
+    show_raw_output:
+      required: false
+      default: 'true'
 outputs:
     results:
       description: The evaluation results. Results are returned in jsonl format
@@ -51,7 +54,8 @@ runs:
               "evaluation_name": ${{ inputs.evaluation_name && toJSON(fromJSON(inputs.evaluation_name)) || 'null' }},
               "evaluator_config": ${{ inputs.evaluator_config && toJSON(fromJSON(inputs.evaluator_config)) || 'null' }},
               "azure_ai_project": ${{ inputs.azure_ai_project && toJSON(fromJSON(inputs.azure_ai_project)) || 'null' }},
-              "output_path": "${{ github.action_path }}/results.jsonl"
+              "output_path": "${{ github.action_path }}/results.jsonl",
+              "show_raw_output": ${{ toJSON(inputs.show_raw_output) }}
             }
           EOF
         shell: bash

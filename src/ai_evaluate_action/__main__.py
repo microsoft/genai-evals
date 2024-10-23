@@ -40,7 +40,7 @@ def main(*, config_path: str | os.PathLike[str] | Path, summary_path: str | os.P
     )
 
     if summary_path is not None:
-        summarize_results(results, summary_path)
+        summarize_results(results, summary_path, show_raw_output=config.show_raw_output)
 
 
 if __name__ == "__main__":

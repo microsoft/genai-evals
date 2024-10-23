@@ -84,6 +84,7 @@ class Config(BaseModel):
     evaluator_config: dict[str, EvaluatorConfig] | None = None
     azure_ai_project: AzureAIProject | None = None
     output_path: Path | None = None
+    show_raw_output: bool = True
 
     def hydrate_evaluators(self, **kwargs: object) -> dict[str, Callable]:
         def initialize_evaluator(evaluator_class: Type[T]) -> T:

@@ -37,6 +37,8 @@
 | {{ evaluator_name }} | {% for row in rows -%} {{ row.eval_scores[evaluator_name] }} |{% endfor %}
 {% endfor %}
 
+{% if show_raw_output %}
+
 ### Raw Outputs
 
 {% for row in rows -%}
@@ -48,4 +50,5 @@
 </details>
 
 {% endfor %}
+{% endif %}
 {% endfor %}

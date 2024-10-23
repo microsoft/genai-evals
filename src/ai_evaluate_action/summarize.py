@@ -74,7 +74,7 @@ def template_parameters(parsed_results: ParsedResults) -> dict[str, Any]:
     }
 
 
-def summarize_results(results: dict, summary_path: Path) -> None:
+def summarize_results(results: dict, summary_path: Path, *, show_raw_output: bool = True) -> None:
     def parse_row(row: dict[str, Any]) -> ParsedRow:
         inputs = {k.removeprefix("inputs."): (v) for k, v in row.items() if k.startswith("inputs.")}
         outputs: dict[EvaluatorName, dict[ValueName, Any]] = {}
@@ -98,7 +98,9 @@ def summarize_results(results: dict, summary_path: Path) -> None:
     env = Environment(loader=FileSystemLoader(Path(__file__).parent.resolve()))
     template = env.get_template("summary.md.jinja")
 
-    summary_path.write_text(template.render(**template_parameters(parsed_results)), encoding="utf-8")
+    summary_path.write_text(
+        template.render(**template_parameters(parsed_results), show_raw_output=show_raw_output), encoding="utf-8"
+    )
 
 
 if __name__ == "__main__":
