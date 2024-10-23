@@ -17,6 +17,9 @@ inputs:
     azure_ai_project:
       required: false
       default: null
+    show_summary:
+      required: false
+      default: true
 outputs:
     results:
       description: The evaluation results. Results are returned in jsonl format
@@ -68,4 +71,11 @@ runs:
             echo ""
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
+        shell: bash
+      - name: Write Job Summary
+        if: inputs.show_summary == 'true'
+        run: |
+          cat >> $GITHUB_STEP_SUMMARY <<'EOF'
+          ${{ steps.run-evaluation.outputs.summary }}
+          EOF
         shell: bash
