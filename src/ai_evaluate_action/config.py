@@ -76,15 +76,13 @@ EVALUATORS: dict[EvaluatorName, Type[Callable]] = {
 }
 
 
-class Config(BaseModel):
+class EvaluateConfig(BaseModel):
     data: Path
     ai_model_configuration: AzureOpenAIModelConfiguration | OpenAIModelConfiguration
     evaluators: dict[str, EvaluatorName]
     evaluation_name: str | None = None
     evaluator_config: dict[str, EvaluatorConfig] | None = None
     azure_ai_project: AzureAIProject | None = None
-    output_path: Path | None = None
-    show_raw_output: bool = True
 
     def hydrate_evaluators(self, **kwargs: object) -> dict[str, Callable]:
         def initialize_evaluator(evaluator_class: Type[T]) -> T:
@@ -103,3 +101,8 @@ class Config(BaseModel):
             evaluator_name: initialize_evaluator(EVALUATORS[evaluator_classname])
             for evaluator_name, evaluator_classname in self.evaluators.items()
         }
+
+
+class ActionConfig(BaseModel):
+    output_path: Path | None = None
+    show_raw_output: bool = True

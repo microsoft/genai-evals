@@ -2,25 +2,12 @@ name: Evaluate
 description: |
     A github action for running evaluations in CI.
 inputs:
-    data:
+    evaluate-configuration:
       required: true
-    ai_model_configuration:
-      required: true
-    evaluators:
-      required: true
-    evaluation_name:
-      required: false
-      default: null
-    evaluator_config:
-      required: false
-      default: null
-    azure_ai_project:
-      required: false
-      default: null
-    show_summary:
+    show-summary:
       required: false
       default: 'true'
-    show_raw_output:
+    show-raw-output:
       required: false
       default: 'true'
 outputs:
@@ -46,23 +33,21 @@ runs:
         shell: bash
       - name: Generate Config
         run: |
-          cat > ${{ github.action_path }}/config.json << EOF
+          cat > ${{ github.action_path }}/action-config.json << EOF
             {
-              "data": ${{ toJSON(inputs.data) }},
-              "ai_model_configuration": ${{ toJSON(fromJSON(inputs.ai_model_configuration)) }},
-              "evaluators": ${{ toJSON(fromJSON(inputs.evaluators)) }},
-              "evaluation_name": ${{ inputs.evaluation_name && toJSON(fromJSON(inputs.evaluation_name)) || 'null' }},
-              "evaluator_config": ${{ inputs.evaluator_config && toJSON(fromJSON(inputs.evaluator_config)) || 'null' }},
-              "azure_ai_project": ${{ inputs.azure_ai_project && toJSON(fromJSON(inputs.azure_ai_project)) || 'null' }},
               "output_path": "${{ github.action_path }}/results.jsonl",
-              "show_raw_output": ${{ toJSON(inputs.show_raw_output) }}
+              "show_raw_output": ${{ toJSON(inputs.show-raw-output) }}
             }
           EOF
         shell: bash
       - name: Run Evaluation
         id: run-evaluation
         run: |
-          python -m ai_evaluate_action --config ${{ github.action_path }}/config.json --summary "${{ github.action_path }}/summary.md"
+          python -m ai_evaluate_action \
+            --evaluate-config "${{ inputs.evaluate-configuration }}" \
+            --action-config  "${{ github.action_path }}/action-config.json" \
+            --summary "${{ github.action_path }}/summary.md"
+
           {
             echo 'results<<EOF'
             cat "${{ github.action_path }}/results.jsonl"
@@ -77,7 +62,7 @@ runs:
           } >> "$GITHUB_OUTPUT"
         shell: bash
       - name: Write Job Summary
-        if: inputs.show_summary == 'true'
+        if: inputs.show-summary == 'true'
         run: |
           cat >> $GITHUB_STEP_SUMMARY <<'EOF'
           ${{ steps.run-evaluation.outputs.summary }}
