@@ -1,0 +1,41 @@
+name: Test Evaluate Action
+on:
+  workflow_call:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.OIDC_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.OIDC_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.OIDC_AZURE_SUBSCRIPTION_ID }}
+      - name: Write evaluate config
+        run: |
+          cat > ${{ github.workspace }}/evaluate-config.json <<EOF
+          {
+            "data": "${{ github.workspace }}/.github/.test_files/eval-input.jsonl",
+            "evaluators": {
+              "coherence": "CoherenceEvaluator",
+              "fluency": "FluencyEvaluator"
+            },
+            "ai_model_configuration": {
+              "type": "azure_openai",
+              "azure_endpoint": "${{ secrets.AZURE_OPENAI_ENDPOINT }}",
+              "azure_deployment": "${{ secrets.AZURE_OPENAI_CHAT_DEPLOYMENT }}",
+              "api_key": "${{ secrets.AZURE_OPENAI_API_KEY }}",
+              "api_version": "${{ secrets.AZURE_OPENAI_API_VERSION }}"
+            }
+          }
+          EOF
+      - name: Run AI Evaluation
+        id: run-ai-evaluation
+        uses: microsoft/genai-evals@main
+        with:
+          evaluate-configuration: ${{ github.workspace }}/evaluate-config.json
