@@ -9,7 +9,7 @@ authors = []
 readme = "README.md"
 description = ""
 requires-python = ">=3.12"
-dependencies = ["azure-ai-evaluation", "pydantic~=2.0", "Jinja2~=3.0"]
+dependencies = ["azure-ai-evaluation[remote]", "pydantic~=2.0", "Jinja2~=3.0"]
 
 [project.optional-dependencies]
 dev = ["pre-commit", "mypy~=1.0", "tox~=4.0"]
