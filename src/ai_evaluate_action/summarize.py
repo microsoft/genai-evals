@@ -39,6 +39,10 @@ def template_parameters(parsed_results: ParsedResults) -> dict[str, Any]:
     tests: dict[tuple[str, str], list[ExtraRow]] = {}
     system_prompts: set[SystemPrompt] = set()
     for row in parsed_results.rows:
+
+        print("* * * row", json.dumps(row))
+
+
         description = json.loads(row["inputs"]["description"])
         system_prompt = SystemPrompt(name=description["context"]["system-prompt"], value=row["inputs"]["context"])
 
