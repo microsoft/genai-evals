@@ -46,10 +46,8 @@ runs:
       - name: Run Evaluation
         id: run-evaluation
         run: |
-          echo "${{ inputs.evaluate-configuration }}"" \
-          echo "${{ github.action_path }}"" \
           python -m ai_evaluate_action \
-            --evaluate-config "${{ inputs.evaluate-configuration }}" \
+            --evaluate-config "${{ inputs }}" \
             --action-config  "${{ github.action_path }}/action-config.json" \
             --summary "${{ github.action_path }}/summary.md"
 
