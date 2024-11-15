@@ -1,6 +1,6 @@
 name: Generative AI Evaluation Action
 description: |
-    A github action for running evaluations in CI.
+    Conduct a quality and safety evaluation of generative AI models and applications using the Azure AI Evaluation SDK.
 inputs:
     evaluate-configuration:
       description: The configuration for the evaluation.
