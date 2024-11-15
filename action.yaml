@@ -1,13 +1,16 @@
-name: Evaluate
+name: Generative AI Evaluation Action
 description: |
     A github action for running evaluations in CI.
 inputs:
     evaluate-configuration:
+      description: The configuration for the evaluation.
       required: true
     show-summary:
+      description: Show the summary of the evaluation.
       required: false
       default: 'true'
     show-raw-output:
+      description: Show the raw output of the evaluation.
       required: false
       default: 'true'
 outputs:
