@@ -20,6 +20,8 @@ outputs:
     summary:
       description: The evaluation summary, rendered as a markdown file.
       value: ${{ steps.run-evaluation.outputs.summary }}
+branding:
+  color: 'blue'
 runs:
     using: "composite"
     steps:
