@@ -38,6 +38,7 @@ To use this GitHub Action, add this GitHub Action to your CI/CD workflows and sp
 name: Sample Evaluate Action
 on:
   workflow_call:
+  workflow_dispatch:
 
 permissions:
   id-token: write
