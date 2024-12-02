@@ -1,14 +1,87 @@
-# Project
+# Azure AI Evaluation GitHub Action
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+This GitHub Action enables offline evaluation of AI models within your CI/CD pipelines. It is designed to streamline the evaluation process, allowing you to assess model performance and make informed decisions before deploying to production. 
 
-As the maintainer of this project, please make a few updates:
+Offline evaluation involves testing AI models using test datasets to measure their performance on various quality and safety metrics such as fluency, coherence and content safety. After selecting a model in the [Azure AI Model Catalog](https://azure.microsoft.com/en-us/products/ai-model-catalog?msockid=1f44c87dd9fa6d1e257fdd6dd8406c42) or [GitHub Model marketplace](https://github.com/marketplace/models), offline pre-production evaluation is crucial for AI application validation during integration testing, allowing developers to identify potential issues and make improvements before deploying the model or application to production (e.g., when updating system meta prompts). 
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+## Features
+* **Automated Evaluation:** Integrate offline evaluation into your CI/CD workflows to automate the pre-production assessment of AI models. 
+* **Out of the Box and Custom Evaluators:** Leverage existing evaluators provided by the [Azure AI Evaluation SDK](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/develop/evaluate-sdk) or add your own custom evaluators. The following evaluators are supported: 
+  * BleuScoreEvaluator
+  * CoherenceEvaluator 
+  * ContentSafetyEvaluator 
+  * HateUnfairnessEvaluator 
+  * SelfHarmEvaluator 
+  * SexualEvaluator 
+  * ViolenceEvaluator 
+  * F1ScoreEvaluator 
+  * FluencyEvaluator 
+  * GleuScoreEvaluator 
+  * GroundednessEvaluator 
+  * MeteorScoreEvaluator 
+  * ProtectedMaterialEvaluator 
+  * QAEvaluator 
+  * RelevanceEvaluator 
+  * RetrievalEvaluator 
+  * RougeScoreEvaluator 
+  * SimilarityEvaluator 
+  * IndirectAttackEvaluator 
+* **Seamless Integration:** Easily integrate with existing GitHub workflows to run evaluation based on rules that you specify in your workflows (e.g., when changes are committed to feature flag configuration or system meta prompt files). 
+
+## Pre-Requisites
+To use the Azure AI Evaluation GitHub Action you need to first install the Azure AI evaluation SDK by following the instructions [here](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/develop/evaluate-sdk#getting-started). 
+
+## Usage
+To use this GitHub Action, add this GitHub Action to your CI/CD workflows and specify the trigger criteria (e.g., on commit) and file paths to trigger your automated workflows (note: to minimize costs you should avoid running evaluation on every commit). This example illustrates how Azure AI Evaluation can be run when changes are committed to specific files in your repo (please update GENAI_EVALS_DATA_PATH to point to the correct directory in your repo):
+
+```
+name: Sample Evaluate Action
+on:
+  workflow_call:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    env:
+      GENAI_EVALS_CONFIG_PATH: ${{ github.workspace }}/evaluate-config.json
+      GENAI_EVALS_DATA_PATH: ${{ github.workspace }}/.github/.test_files/eval-input.jsonl
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.OIDC_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.OIDC_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.OIDC_AZURE_SUBSCRIPTION_ID }}
+      - name: Write evaluate config
+        run: |
+          cat > ${{ env.GENAI_EVALS_CONFIG_PATH }} <<EOF
+          {
+            "data": "${{ env.GENAI_EVALS_DATA_PATH }}",
+            "evaluators": {
+              "coherence": "CoherenceEvaluator",
+              "fluency": "FluencyEvaluator"
+            },
+            "ai_model_configuration": {
+              "type": "azure_openai",
+              "azure_endpoint": "${{ secrets.AZURE_OPENAI_ENDPOINT }}",
+              "azure_deployment": "${{ secrets.AZURE_OPENAI_CHAT_DEPLOYMENT }}",
+              "api_key": "${{ secrets.AZURE_OPENAI_API_KEY }}",
+              "api_version": "${{ secrets.AZURE_OPENAI_API_VERSION }}"
+            }
+          }
+          EOF
+      - name: Run AI Evaluation
+        id: run-ai-evaluation
+        uses: microsoft/genai-evals@main
+        with:
+          evaluate-configuration: ${{ env.GENAI_EVALS_CONFIG_PATH }}
+```
+## Outputs
+Evaluation results will be output to the summary section for each AI Evaluation GitHub Action run under Actions in GitHub.com.
 
 ## Contributing
 
