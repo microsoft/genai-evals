@@ -26,7 +26,7 @@ Offline evaluation involves testing AI models using test datasets to measure the
   * RougeScoreEvaluator 
   * SimilarityEvaluator 
   * IndirectAttackEvaluator 
-* **Seamless Integration:** Easily integrate with existing GitHub workflows to run evaluation based on rules that you specify in your workflows (e.g., when changes are committed to feature flag configuration or system meta prompt files). 
+* **Seamless Integration:** Easily integrate with existing GitHub workflows to run evaluation based on rules that you specify in your workflows (e.g., when changes are committed to feature flag configuration or system prompt files). 
 
 ## Pre-Requisites
 To use the Azure AI Evaluation GitHub Action you need to first install the Azure AI evaluation SDK by following the instructions [here](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/develop/evaluate-sdk#getting-started). 
